@@ -1,6 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import Course from './components/Course';
+import CourseList from './components/CourseList';
 
 const schedule = {
   "title": "CS Courses for 2020-2021",
@@ -29,30 +31,26 @@ const schedule = {
 };
 
 const Banner = ({title}) => (
-  <Text style={styles.bannerStyle}>{title}</Text>
+  <Text style={styles.bannerStyle}>{title || '[loading...]'}</Text>
 );
 
-const getCourseNumber = course => (
-  course.id.slice(1)
-)
 
-const Course = ({course}) => (
-  <TouchableOpacity style = {styles.courseButton}>
-    <Text style = {styles.courseText}>
-      {`CS ${getCourseNumber(course)}\n${course.meets}`}
-    </Text>
-  </TouchableOpacity>
-
-)
-const CourseList = ({courses}) => (
-  <ScrollView>
-    <View style = {styles.courseList}>
-      {courses.map(course => <Course key={course.id} course={course} />)}
-    </View>
-  </ScrollView>
-);
 
 const App = () => {
+  const [schedule, setSchedule] = useState({ title: '', courses: []})
+
+  const url = 'https://courses.cs.northwestern.edu/394/data/cs-courses.php'
+  
+  useEffect(()=>{
+    const fetchSchedule = async () =>{
+      const response = await fetch(url);
+      if (!response.ok) throw response;
+      const json = await response.json();
+      setSchedule(json);
+    };
+    fetchSchedule();
+  }, []);
+  
   return (
     <SafeAreaView style={styles.container}>
       <Banner title={schedule.title} />
