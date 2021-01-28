@@ -44,7 +44,7 @@ const CourseEditScreen = ({navigation, route}) => {
           <Form.Field
             name="ID"
             leftIcon="identifier"
-            placeholder= {course.id}
+            placeholder= "F110"
             autoCapitalize="none"
             autoFocus={true}
           />
